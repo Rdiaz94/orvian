@@ -1,0 +1,123 @@
+<!-- Encabezado de la pantalla -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <!-- Título -->
+  <h1 class="h2 fw-bold mb-0">Mis tareas</h1>
+  <!-- Botón para crear una tarea -->
+  <button type="button" class="or-boton" (click)="abrirNueva()"><i class="bi bi-plus-lg me-1"></i>Nueva tarea</button>
+</div>
+
+@if (error(); as mensaje) {
+  <!-- Error devuelto por la API -->
+  <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+    <!-- Motivo del error -->
+    <span>{{ mensaje }}</span>
+    <!-- Botón para cerrar el aviso -->
+    <button type="button" class="btn-close btn-close-white" aria-label="Cerrar aviso" (click)="error.set(null)"></button>
+  </div>
+}
+
+<!-- Tablero con una columna por estado -->
+<div class="row g-3">
+  @for (columna of columnas(); track columna.estado) {
+    <!-- Una columna; se puede soltar una tarea sobre ella -->
+    <section class="col-12 col-lg-4" (dragover)="permitirSoltar($event)" (drop)="alSoltar($event, columna.estado)" [attr.aria-label]="columna.titulo">
+      <!-- Contenedor de la columna -->
+      <div class="columna or-tarjeta p-3">
+        <!-- Cabecera de la columna -->
+        <header class="d-flex align-items-center gap-2 mb-3">
+          <!-- Recuadro con el ícono -->
+          <span class="or-icono" [class]="columna.color"><i class="bi" [class]="columna.icono"></i></span>
+          <!-- Nombre de la columna -->
+          <h2 class="h6 fw-bold mb-0 flex-grow-1">{{ columna.titulo }}</h2>
+          <!-- Cantidad total de tareas -->
+          <span class="or-chip">{{ columna.total }}</span>
+        </header>
+
+        @if (columna.cargando && columna.items.length === 0) {
+          <!-- Indicador de carga -->
+          <div class="text-center py-3" role="status"><span class="spinner-border spinner-border-sm text-warning" aria-hidden="true"></span><span class="visually-hidden">Cargando</span></div>
+        } @else if (columna.items.length === 0) {
+          <!-- Mensaje de columna vacía -->
+          <p class="text-secondary small text-center my-3">Sin tareas</p>
+        }
+
+        @for (tarea of columna.items; track tarea.id) {
+          <!-- Tarjeta de una tarea; se puede arrastrar a otra columna -->
+          <article class="tarea or-tarjeta p-3 mb-2" draggable="true" (dragstart)="alArrastrar(tarea)" (dragend)="arrastrando.set(null)">
+            <!-- Etiquetas de la tarea -->
+            <div class="d-flex flex-wrap gap-1 mb-2">
+              <!-- Tipo de tarea -->
+              <span class="or-chip">{{ tarea.etiqueta }}</span>
+              @if (vencida(tarea)) {
+                <!-- Aviso de tarea vencida -->
+                <span class="or-chip vencida">Vencida</span>
+              }
+              @if (tarea.grupoNombre) {
+                <!-- Indica que pertenece a un grupo -->
+                <span class="or-chip-morado or-chip"><i class="bi bi-people-fill me-1"></i>{{ tarea.grupoNombre }}</span>
+              }
+            </div>
+            <!-- Título -->
+            <h3 class="h6 mb-1">{{ tarea.titulo }}</h3>
+            <!-- Curso y fecha límite -->
+            <small class="text-secondary d-block">
+              {{ tarea.cursoNombre ?? 'Sin curso' }}
+              @if (tarea.fechaVencimiento) {
+                · {{ tarea.fechaVencimiento | date: 'd MMM, h:mm a' }}
+              }
+            </small>
+
+            @if (tarea.estado === 'EN_PROGRESO') {
+              <!-- Control del avance -->
+              <label class="d-flex align-items-center gap-2 mt-2 small text-secondary">
+                <!-- Control deslizante -->
+                <input type="range" class="form-range" min="1" max="99" [value]="tarea.progreso" (change)="cambiarAvance(tarea, $event)" [attr.aria-label]="'Avance de ' + tarea.titulo" />
+                <!-- Porcentaje actual -->
+                <span>{{ tarea.progreso }}%</span>
+              </label>
+            }
+
+            <!-- Acciones de la tarea -->
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              @if (tarea.estado === 'PENDIENTE') {
+                <!-- Empieza la tarea -->
+                <button type="button" class="or-boton-suave btn-sm" (click)="iniciar(tarea)">Empezar</button>
+              }
+              @if (tarea.estado === 'EN_PROGRESO') {
+                <!-- Termina la tarea -->
+                <button type="button" class="or-boton-suave btn-sm" (click)="terminar(tarea)">Terminar</button>
+              }
+              @if (tarea.estado === 'HECHA') {
+                <!-- Reabre la tarea -->
+                <button type="button" class="or-boton-suave btn-sm" (click)="reabrir(tarea)">Reabrir</button>
+              }
+              @if (!tarea.grupoId) {
+                <!-- Edita la tarea; las de grupo las administra el líder -->
+                <button type="button" class="or-boton-suave btn-sm" (click)="abrirEdicion(tarea)" [attr.aria-label]="'Editar ' + tarea.titulo"><i class="bi bi-pencil"></i></button>
+                @if (confirmandoId() === tarea.id) {
+                  <!-- Confirmación de borrado -->
+                  <button type="button" class="btn btn-danger btn-sm rounded-pill" (click)="borrar(tarea)">Sí, borrar</button>
+                  <!-- Cancela el borrado -->
+                  <button type="button" class="or-boton-suave btn-sm" (click)="cancelarBorrado()">No</button>
+                } @else {
+                  <!-- Pide confirmar el borrado -->
+                  <button type="button" class="or-boton-suave btn-sm" (click)="pedirBorrado(tarea)" [attr.aria-label]="'Borrar ' + tarea.titulo"><i class="bi bi-trash"></i></button>
+                }
+              }
+            </div>
+          </article>
+        }
+
+        @if (hayMas(columna)) {
+          <!-- Carga la página siguiente -->
+          <button type="button" class="or-boton-suave w-100 mt-1" [disabled]="columna.cargando" (click)="cargarColumna(columna.estado, columna.pagina + 1)">Ver más</button>
+        }
+      </div>
+    </section>
+  }
+</div>
+
+@if (dialogoAbierto()) {
+  <!-- Diálogo para crear o editar -->
+  <app-tarea-formulario [tarea]="enEdicion()" [cursos]="cursos()" (guardado)="alGuardar()" (cancelado)="cerrarDialogo()" />
+}

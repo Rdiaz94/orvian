@@ -1,0 +1,53 @@
+// Portada de la tarjeta con el ícono centrado
+.portada {
+  // Para ubicar el número del ranking
+  position: relative;
+  // Centra el ícono
+  display: flex;
+  // Centrado horizontal
+  justify-content: center;
+  // Centrado vertical
+  align-items: center;
+}
+
+// Ícono grande de la portada
+.icono-portada {
+  // Tamaño grande
+  font-size: 2.4rem;
+  // Un poco translúcido
+  opacity: 0.85;
+}
+
+// Número grande del Top 10, como en Netflix
+.ranking {
+  // Ubicado a la izquierda de la portada
+  position: absolute;
+  // Pegado a la izquierda
+  left: 0.6rem;
+  // Pegado abajo
+  bottom: -0.4rem;
+  // Tamaño muy grande
+  font-size: 3.6rem;
+  // Texto muy grueso
+  font-weight: 900;
+  // Relleno transparente
+  color: transparent;
+  // Contorno blanco
+  -webkit-text-stroke: 2px #ffffff;
+  // Interlineado compacto
+  line-height: 1;
+}
+
+// Descripción recortada a dos líneas
+.descripcion {
+  // Muestra solo dos líneas
+  display: -webkit-box;
+  // Orientación vertical del recorte
+  -webkit-box-orient: vertical;
+  // Número de líneas
+  -webkit-line-clamp: 2;
+  // Oculta el resto
+  line-clamp: 2;
+  // Oculta el texto sobrante
+  overflow: hidden;
+}

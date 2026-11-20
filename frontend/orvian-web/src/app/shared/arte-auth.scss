@@ -1,0 +1,189 @@
+// El panel ocupa la mitad derecha de la pantalla
+:host {
+  // Se comporta como una columna flexible
+  display: flex;
+  // Ocupa la mitad del ancho
+  flex: 1 1 50%;
+  // Permite que se encoja
+  min-width: 0;
+}
+
+// Panel con fondo oscuro y esquinas muy redondeadas
+.arte {
+  // Para ubicar la ilustración detrás del texto
+  position: relative;
+  // Contenido en columna
+  display: flex;
+  // Elementos en columna
+  flex-direction: column;
+  // El texto queda abajo
+  justify-content: flex-end;
+  // Espacio entre el mensaje y la tarjeta
+  gap: 1.5rem;
+  // Ocupa todo el alto y el ancho
+  width: 100%;
+  // Espacio interior
+  padding: 2.5rem;
+  // Esquinas muy redondeadas
+  border-radius: 2rem;
+  // Recorta la ilustración
+  overflow: hidden;
+  // Fondo negro con un toque azul
+  background: linear-gradient(160deg, #0b0b16 0%, #050508 70%);
+  // Borde sutil
+  border: 1px solid var(--or-borde);
+}
+
+// Ilustración grande
+.arte-fondo {
+  // Ubicada detrás del texto
+  position: absolute;
+  // Cerca del borde superior
+  top: 0;
+  // Centrada horizontalmente
+  left: 50%;
+  // Ancho adaptable
+  width: min(32rem, 92%);
+  // Centrado exacto
+  transform: translateX(-50%);
+}
+
+// Mensaje de bienvenida
+.arte-texto {
+  // Por encima de la ilustración
+  position: relative;
+}
+
+// Nombre de la marca pequeño
+.arte-marca {
+  // Color ámbar
+  color: var(--or-ambar);
+  // Texto grueso
+  font-weight: 800;
+  // Letras separadas
+  letter-spacing: 0.1em;
+  // Mayúsculas
+  text-transform: uppercase;
+  // Tamaño pequeño
+  font-size: 0.8rem;
+}
+
+// Título de bienvenida
+.arte-titulo {
+  // Tamaño grande
+  font-size: 2.2rem;
+  // Texto muy grueso
+  font-weight: 800;
+  // Letras algo más juntas
+  letter-spacing: -0.03em;
+  // Espacios
+  margin: 0.4rem 0;
+}
+
+// Descripción
+.arte-descripcion {
+  // Texto algo apagado
+  color: #c9c9d4;
+  // Sin margen inferior
+  margin: 0;
+  // Ancho de lectura cómodo
+  max-width: 30rem;
+}
+
+// Tarjeta inferior translúcida
+.arte-tarjeta {
+  // Por encima de la ilustración
+  position: relative;
+  // Fondo translúcido
+  background: rgba(255, 255, 255, 0.06);
+  // Desenfoca lo que hay detrás
+  backdrop-filter: blur(10px);
+  // Borde sutil
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  // Esquinas redondeadas
+  border-radius: 1.5rem;
+  // Espacio interior
+  padding: 1.25rem 1.5rem;
+  // Ancho máximo
+  max-width: 26rem;
+}
+
+// Título de la tarjeta
+.arte-tarjeta-titulo {
+  // Tamaño mediano
+  font-size: 1.1rem;
+  // Texto grueso
+  font-weight: 700;
+  // Espacio inferior
+  margin-bottom: 0.4rem;
+}
+
+// Texto de la tarjeta
+.arte-tarjeta-texto {
+  // Texto apagado
+  color: #c9c9d4;
+  // Tamaño pequeño
+  font-size: 0.9rem;
+  // Espacio inferior
+  margin-bottom: 0.9rem;
+}
+
+// Fila de círculos decorativos
+.arte-avatares {
+  // Distribución horizontal
+  display: flex;
+}
+
+// Círculo decorativo
+.avatar {
+  // Contenido centrado
+  display: inline-flex;
+  // Centrado horizontal
+  justify-content: center;
+  // Centrado vertical
+  align-items: center;
+  // Tamaño fijo
+  width: 2.2rem;
+  // Alto fijo
+  height: 2.2rem;
+  // Forma circular
+  border-radius: 50%;
+  // Borde que lo separa del siguiente
+  border: 2px solid #17171f;
+  // Texto grueso
+  font-weight: 700;
+  // Tamaño del texto
+  font-size: 0.85rem;
+  // Se superponen un poco
+  margin-left: -0.5rem;
+
+  // El primero no se corre
+  &:first-child {
+    // Sin desplazamiento
+    margin-left: 0;
+  }
+}
+
+// Círculo ámbar
+.av-ambar {
+  // Fondo ámbar
+  background: var(--or-ambar);
+  // Texto negro
+  color: #000000;
+}
+
+// Círculo azul
+.av-azul {
+  // Fondo azul
+  background: var(--or-azul);
+  // Texto blanco
+  color: #ffffff;
+}
+
+// Círculo morado
+.av-morado {
+  // Fondo morado
+  background: var(--or-morado);
+  // Texto blanco
+  color: #ffffff;
+}

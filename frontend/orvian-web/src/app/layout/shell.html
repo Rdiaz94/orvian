@@ -1,0 +1,56 @@
+<!-- Estructura general de las pantallas privadas -->
+<div class="shell">
+  <!-- Barra lateral, visible en pantallas grandes -->
+  <aside class="lateral d-none d-lg-flex">
+    <!-- Nombre de la marca -->
+    <a class="logo" routerLink="/inicio">Orvian</a>
+    <!-- Opciones de navegación -->
+    <nav class="d-flex flex-column gap-1" aria-label="Navegación principal">
+      @for (opcion of opciones(); track opcion.ruta) {
+        <!-- Cada opción con su ícono -->
+        <a class="opcion" [routerLink]="opcion.ruta" routerLinkActive="activa">
+          <!-- Recuadro redondeado con el ícono -->
+          <span class="or-icono" [class]="opcion.color"><i class="bi" [class]="opcion.icono"></i></span>
+          <!-- Texto de la opción -->
+          {{ opcion.etiqueta }}
+        </a>
+      }
+    </nav>
+    <!-- Lema de la marca al pie -->
+    <p class="mt-auto small text-secondary mb-0">Estudia. Comparte. Avanza.</p>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="contenido">
+    <!-- Barra superior con búsqueda y datos del usuario -->
+    <header class="superior">
+      <!-- Buscador de recursos -->
+      <form class="flex-grow-1" role="search" (submit)="buscar($event)">
+        <!-- Campo de texto -->
+        <input class="form-control or-campo" type="search" placeholder="Buscar recursos" aria-label="Buscar recursos" [value]="busqueda()" (input)="alEscribir($event)" />
+      </form>
+      <!-- Usuario y salida -->
+      <div class="d-flex align-items-center gap-2">
+        <!-- Círculo con las iniciales -->
+        <span class="or-icono or-morado fw-bold" aria-hidden="true">{{ iniciales() }}</span>
+        <!-- Nombre, oculto en pantallas pequeñas -->
+        <span class="d-none d-md-inline fw-semibold">{{ auth.usuario()?.nombre }}</span>
+        <!-- Botón para cerrar la sesión -->
+        <button type="button" class="or-boton-suave" title="Cerrar sesión" aria-label="Cerrar sesión" (click)="salir()"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </header>
+    <!-- Aquí se muestra la pantalla activa -->
+    <router-outlet />
+  </main>
+
+  <!-- Navegación inferior, visible en pantallas pequeñas -->
+  <nav class="inferior d-lg-none" aria-label="Navegación principal">
+    @for (opcion of opciones(); track opcion.ruta) {
+      <!-- Cada opción solo con su ícono -->
+      <a class="opcion-corta" [routerLink]="opcion.ruta" routerLinkActive="activa" [attr.aria-label]="opcion.etiqueta">
+        <!-- Recuadro redondeado con el ícono -->
+        <span class="or-icono" [class]="opcion.color"><i class="bi" [class]="opcion.icono"></i></span>
+      </a>
+    }
+  </nav>
+</div>

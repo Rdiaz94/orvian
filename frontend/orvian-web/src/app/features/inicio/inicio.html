@@ -1,0 +1,152 @@
+@if (cargando()) {
+  <!-- Indicador de carga -->
+  <div class="text-center py-5" role="status"><span class="spinner-border text-warning" aria-hidden="true"></span><span class="visually-hidden">Cargando</span></div>
+} @else if (error(); as mensaje) {
+  <!-- Error al cargar -->
+  <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+    <!-- Motivo del error -->
+    <span>{{ mensaje }}</span>
+    <!-- Botón para reintentar -->
+    <button type="button" class="or-boton-suave" (click)="cargar()">Reintentar</button>
+  </div>
+} @else if (panel(); as p) {
+  <!-- Saludo -->
+  <h1 class="h2 fw-bold mb-3">{{ saludo() }}, {{ nombreCorto() }}</h1>
+
+  <!-- Banner principal con la próxima entrega -->
+  <section class="banner">
+    @if (p.resumen.proximaEntrega; as entrega) {
+      <!-- Etiqueta del banner -->
+      <span class="banner-etiqueta">PRÓXIMA ENTREGA</span>
+      <!-- Título de la tarea -->
+      <h2 class="display-6 fw-bold">{{ entrega.titulo }}</h2>
+      <!-- Fecha límite -->
+      <p class="lead text-white-50 mb-3">Vence el {{ entrega.fechaVencimiento | date: 'fullDate' }}, {{ entrega.fechaVencimiento | date: 'shortTime' }}</p>
+      <!-- Acciones -->
+      <div class="d-flex gap-2">
+        <!-- Lleva al tablero de tareas -->
+        <a class="or-boton" routerLink="/tareas"><i class="bi bi-play-fill me-1"></i>Ver mis tareas</a>
+      </div>
+    } @else {
+      <!-- Etiqueta del banner -->
+      <span class="banner-etiqueta">TODO AL DÍA</span>
+      <!-- Mensaje cuando no hay entregas próximas -->
+      <h2 class="display-6 fw-bold">No tienes entregas próximas</h2>
+      <!-- Invitación a crear tareas -->
+      <p class="lead text-white-50 mb-3">Crea una tarea para organizar tu estudio.</p>
+      <!-- Acciones -->
+      <div class="d-flex gap-2">
+        <!-- Lleva al tablero de tareas -->
+        <a class="or-boton" routerLink="/tareas">Ir a mis tareas</a>
+      </div>
+    }
+  </section>
+
+  <!-- Indicadores principales -->
+  <section class="row g-3 mt-1" aria-label="Resumen">
+    <!-- Cumplimiento de tareas -->
+    <div class="col-6 col-lg-3">
+      <div class="or-tarjeta p-3 h-100">
+        <small class="text-secondary">Cumplimiento</small>
+        <div class="fs-2 fw-bold">{{ p.resumen.porcentajeCumplimiento }}%</div>
+        <div class="progress or-progreso mt-2"><div class="progress-bar" [style.width.%]="p.resumen.porcentajeCumplimiento"></div></div>
+      </div>
+    </div>
+    <!-- Tareas por hacer -->
+    <div class="col-6 col-lg-3">
+      <div class="or-tarjeta p-3 h-100">
+        <small class="text-secondary">Tareas por hacer</small>
+        <div class="fs-2 fw-bold">{{ p.resumen.tareasPendientes + p.resumen.tareasEnProgreso }}</div>
+        <small class="text-secondary">{{ p.resumen.tareasHechas }} hechas</small>
+      </div>
+    </div>
+    <!-- Grupos -->
+    <div class="col-6 col-lg-3">
+      <div class="or-tarjeta p-3 h-100">
+        <small class="text-secondary">Grupos activos</small>
+        <div class="fs-2 fw-bold">{{ p.resumen.gruposActivos }}</div>
+      </div>
+    </div>
+    <!-- Recursos compartidos -->
+    <div class="col-6 col-lg-3">
+      <div class="or-tarjeta p-3 h-100">
+        <small class="text-secondary">Recursos compartidos</small>
+        <div class="fs-2 fw-bold">{{ p.resumen.recursosCompartidos }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fila de tareas -->
+  <h2 class="h5 fw-bold mt-4 mb-0">Continúa donde lo dejaste</h2>
+  @if (p.tareas.length > 0) {
+    <div class="or-fila">
+      @for (tarea of p.tareas; track tarea.id) {
+        <!-- Tarjeta de una tarea -->
+        <article class="or-tarjeta or-item p-3">
+          <!-- Estado y fecha -->
+          <div class="d-flex justify-content-between align-items-center">
+            <span [class]="claseEstado[tarea.estado]">{{ textoEstado[tarea.estado] }}</span>
+            @if (tarea.fechaVencimiento) {
+              <small class="text-secondary">{{ tarea.fechaVencimiento | date: 'd MMM' }}</small>
+            }
+          </div>
+          <!-- Título -->
+          <h3 class="h6 mt-2 mb-1">{{ tarea.titulo }}</h3>
+          <!-- Curso y etiqueta -->
+          <small class="text-secondary">{{ tarea.cursoNombre ?? 'Sin curso' }} · {{ textoEtiqueta[tarea.etiqueta] }}</small>
+          <!-- Avance -->
+          <div class="progress or-progreso mt-3"><div class="progress-bar" [style.width.%]="tarea.progreso"></div></div>
+        </article>
+      }
+    </div>
+  } @else {
+    <!-- Mensaje cuando no hay tareas -->
+    <p class="text-secondary mt-2">No tienes tareas pendientes. ¡Buen trabajo!</p>
+  }
+
+  <!-- Fila de grupos -->
+  <h2 class="h5 fw-bold mt-4 mb-0">Tus grupos</h2>
+  @if (p.grupos.length > 0) {
+    <div class="or-fila">
+      @for (grupo of p.grupos; track grupo.id; let i = $index) {
+        <!-- Tarjeta de un grupo; lleva a su detalle -->
+        <a class="or-tarjeta or-item p-3 d-block text-decoration-none text-reset" [routerLink]="['/grupos', grupo.id]">
+          <!-- Portada de color -->
+          <div class="or-portada" [class]="'or-portada or-g' + (i % 6)"></div>
+          <!-- Nombre -->
+          <h3 class="h6 mt-3 mb-1">{{ grupo.nombre }}</h3>
+          <!-- Curso y papel -->
+          <small class="text-secondary">{{ grupo.cursoNombre ?? 'Sin curso' }}</small>
+          <!-- Papel del usuario -->
+          <div class="mt-2"><span [class]="grupo.miRol === 'LIDER' ? 'or-chip or-chip-ambar' : 'or-chip'">{{ grupo.miRol === 'LIDER' ? 'Líder' : 'Miembro' }}</span></div>
+        </a>
+      }
+    </div>
+  } @else {
+    <!-- Mensaje cuando no hay grupos -->
+    <p class="text-secondary mt-2">Todavía no perteneces a ningún grupo.</p>
+  }
+
+  <!-- Fila de recursos -->
+  <h2 class="h5 fw-bold mt-4 mb-0">Recursos recientes</h2>
+  @if (p.recursos.length > 0) {
+    <div class="or-fila">
+      @for (recurso of p.recursos; track recurso.id; let i = $index) {
+        <!-- Tarjeta de un recurso -->
+        <article class="or-tarjeta or-item p-3">
+          <!-- Portada de color -->
+          <div class="or-portada" [class]="'or-portada or-g' + (i % 6)"></div>
+          <!-- Tipo de recurso -->
+          <div class="mt-3"><span class="or-chip">{{ textoTipo[recurso.tipo] }}</span></div>
+          <!-- Título -->
+          <h3 class="h6 mt-2 mb-1">{{ recurso.titulo }}</h3>
+          <!-- Autor y descargas -->
+          <small class="text-secondary">{{ recurso.autorNombre }} · {{ recurso.descargas }} descargas</small>
+        </article>
+      }
+    </div>
+  } @else {
+    <!-- Mensaje cuando no hay recursos -->
+    <p class="text-secondary mt-2">Aún no hay recursos compartidos.</p>
+  }
+}

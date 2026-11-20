@@ -1,0 +1,107 @@
+<!-- Fondo oscuro; al pulsarlo se cierra el diálogo -->
+<div class="or-modal-fondo" (click)="cancelado.emit()" (keydown.escape)="cancelado.emit()" role="presentation">
+  <!-- Caja del diálogo; detiene el clic para que no se cierre al usarla -->
+  <div class="or-tarjeta or-modal p-4" role="dialog" aria-modal="true" aria-labelledby="titulo-dialogo" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="cancelado.emit()">
+    <!-- Título -->
+    <h2 id="titulo-dialogo" class="h4 fw-bold mb-3">{{ recurso() ? 'Editar recurso' : 'Compartir recurso' }}</h2>
+
+    @if (error(); as mensaje) {
+      <!-- Error devuelto por la API -->
+      <div class="alert alert-danger" role="alert">{{ mensaje }}</div>
+    }
+
+    <!-- Formulario del recurso -->
+    <form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+      <!-- Campo del título -->
+      <div class="mb-3">
+        <!-- Etiqueta del campo -->
+        <label class="form-label fw-semibold" for="titulo">Título</label>
+        <!-- Campo de texto -->
+        <input id="titulo" type="text" class="form-control or-campo" formControlName="titulo" [class.is-invalid]="invalido(formulario.controls.titulo) || erroresServidor()['titulo']" />
+        <!-- Mensaje de validación -->
+        <div class="invalid-feedback">{{ erroresServidor()['titulo'] ?? 'El título es obligatorio (máximo 150 caracteres).' }}</div>
+      </div>
+      <!-- Tipo y enlace -->
+      <div class="row g-3 mb-3">
+        <!-- Campo del tipo -->
+        <div class="col-sm-4">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="tipo">Tipo</label>
+          <!-- Lista desplegable -->
+          <select id="tipo" class="form-select or-campo" formControlName="tipo">
+            @for (tipo of tipos; track tipo) {
+              <!-- Un tipo disponible -->
+              <option [value]="tipo">{{ tipo }}</option>
+            }
+          </select>
+        </div>
+        <!-- Campo del enlace -->
+        <div class="col-sm-8">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="url">Enlace</label>
+          <!-- Campo de texto -->
+          <input id="url" type="url" class="form-control or-campo" formControlName="url" placeholder="https://..." [class.is-invalid]="invalido(formulario.controls.url) || erroresServidor()['url']" />
+          <!-- Mensaje de validación -->
+          <div class="invalid-feedback">{{ erroresServidor()['url'] ?? 'Debe empezar con http:// o https:// y no tener espacios.' }}</div>
+        </div>
+      </div>
+      <!-- Campo de la descripción -->
+      <div class="mb-3">
+        <!-- Etiqueta del campo -->
+        <label class="form-label fw-semibold" for="descripcion">Descripción <span class="text-secondary fw-normal">(opcional)</span></label>
+        <!-- Área de texto -->
+        <textarea id="descripcion" rows="2" class="form-control or-campo" formControlName="descripcion" [class.is-invalid]="invalido(formulario.controls.descripcion)"></textarea>
+        <!-- Mensaje de validación -->
+        <div class="invalid-feedback">Máximo 500 caracteres.</div>
+      </div>
+      <!-- Curso y visibilidad -->
+      <div class="row g-3 mb-4">
+        <!-- Campo del curso -->
+        <div class="col-sm-6">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="curso">Curso</label>
+          <!-- Lista desplegable -->
+          <select id="curso" class="form-select or-campo" formControlName="cursoId">
+            <!-- Opción sin curso -->
+            <option [ngValue]="null">Sin curso</option>
+            @for (curso of cursos(); track curso.id) {
+              <!-- Un curso disponible -->
+              <option [ngValue]="curso.id">{{ curso.nombre }}</option>
+            }
+          </select>
+        </div>
+        <!-- Campo de la visibilidad -->
+        <div class="col-sm-6">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="grupo">Compartir con</label>
+          <!-- Lista desplegable -->
+          <select id="grupo" class="form-select or-campo" formControlName="grupoId">
+            <!-- Opción pública -->
+            <option [ngValue]="null">Todos (público)</option>
+            @for (grupo of grupos(); track grupo.id) {
+              <!-- Un grupo disponible -->
+              <option [ngValue]="grupo.id">Solo {{ grupo.nombre }}</option>
+            }
+          </select>
+          @if (recurso()) {
+            <!-- Aviso de que la visibilidad no cambia -->
+            <small class="text-secondary">La visibilidad no se puede cambiar.</small>
+          }
+        </div>
+      </div>
+      <!-- Botones -->
+      <div class="d-flex justify-content-end gap-2">
+        <!-- Cierra sin guardar -->
+        <button type="button" class="or-boton-suave" (click)="cancelado.emit()">Cancelar</button>
+        <!-- Guarda el recurso -->
+        <button type="submit" class="or-boton" [disabled]="cargando()">
+          @if (cargando()) {
+            <!-- Indicador de carga -->
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+          }
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

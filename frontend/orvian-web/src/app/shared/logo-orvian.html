@@ -1,0 +1,27 @@
+<!-- Ícono y nombre de la marca -->
+<span class="logo">
+  <!-- Ícono vectorial: se ve nítido en cualquier tamaño -->
+  <svg [attr.width]="tamano()" [attr.height]="tamano()" viewBox="0 0 48 48" role="img" aria-label="Logo de Orvian">
+    <!-- Degradado ámbar a morado del anillo -->
+    <defs>
+      <linearGradient id="orvian-aro" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fdba30" />
+        <stop offset="1" stop-color="#ad29ff" />
+      </linearGradient>
+    </defs>
+    <!-- Recuadro de esquinas redondeadas, como los íconos de One UI -->
+    <rect width="48" height="48" rx="14" fill="#0e0e12" stroke="#1b1b24" />
+    <!-- Anillo que forma la letra O -->
+    <circle cx="24" cy="24" r="12" fill="none" stroke="url(#orvian-aro)" stroke-width="4" />
+    <!-- Nodo ámbar -->
+    <circle cx="24" cy="12" r="3.2" fill="#fdba30" />
+    <!-- Nodo azul -->
+    <circle cx="34.4" cy="30" r="3.2" fill="#1762ca" />
+    <!-- Nodo morado -->
+    <circle cx="13.6" cy="30" r="3.2" fill="#ad29ff" />
+  </svg>
+  @if (texto()) {
+    <!-- Nombre de la marca -->
+    <span class="logo-texto">Orvian</span>
+  }
+</span>

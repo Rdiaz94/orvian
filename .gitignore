@@ -1,0 +1,27 @@
+# Java y Maven
+target/
+*.class
+*.war
+*.war.original
+
+# Secretos locales: nunca se suben al repositorio
+application-local.properties
+*.env
+
+# Node y Angular
+node_modules/
+dist/
+.angular/
+out-tsc/
+
+# Editor y sistema
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+*.log
+
+# Capturas sueltas en la raíz del proyecto: pueden mostrar contraseñas
+/*.png
+/*.jpg
+/*.jpeg

@@ -1,0 +1,21 @@
+// Ícono y nombre en una fila
+.logo {
+  // Distribución horizontal
+  display: inline-flex;
+  // Centrado vertical
+  align-items: center;
+  // Espacio entre ícono y nombre
+  gap: 0.6rem;
+}
+
+// Nombre de la marca
+.logo-texto {
+  // Texto muy grueso
+  font-weight: 800;
+  // Tamaño de título
+  font-size: 1.5rem;
+  // Letras algo más juntas
+  letter-spacing: -0.04em;
+  // Color blanco
+  color: #ffffff;
+}

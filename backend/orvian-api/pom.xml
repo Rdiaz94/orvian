@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Raíz del archivo: describe el proyecto Maven -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- Versión del modelo de POM que usa Maven -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Hereda la configuración y las versiones compatibles de Spring Boot -->
+    <parent>
+        <!-- Grupo del padre -->
+        <groupId>org.springframework.boot</groupId>
+        <!-- Artefacto padre que gestiona las dependencias -->
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- Última versión 3.5.x: compatible con Tomcat 10.1 y Java 17 -->
+        <version>3.5.16</version>
+        <!-- Busca el padre en el repositorio y no en una carpeta local -->
+        <relativePath/>
+    </parent>
+
+    <!-- Grupo del proyecto -->
+    <groupId>com.orvian</groupId>
+    <!-- Nombre del artefacto del backend -->
+    <artifactId>orvian-api</artifactId>
+    <!-- Versión inicial del proyecto -->
+    <version>0.0.1-SNAPSHOT</version>
+    <!-- Empaquetado WAR para desplegar en Tomcat -->
+    <packaging>war</packaging>
+    <!-- Nombre legible del proyecto -->
+    <name>orvian-api</name>
+    <!-- Descripción breve del proyecto -->
+    <description>API REST de Orvian</description>
+
+    <!-- Propiedades reutilizables del proyecto -->
+    <properties>
+        <!-- Versión de Java con la que se compila -->
+        <java.version>17</java.version>
+    </properties>
+
+    <!-- Lista de librerías que necesita el proyecto -->
+    <dependencies>
+        <!-- Soporte para API REST y servidor web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- Validación de datos con anotaciones -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- Acceso a base de datos con JPA e Hibernate -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- Controlador JDBC para conectarse a PostgreSQL -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <!-- Solo se necesita al ejecutar la aplicación -->
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Seguridad: autenticación, autorización y cifrado de contraseñas -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <!-- Validación de tokens JWT en cada petición (OAuth 2.0 Resource Server) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <!-- Documentación interactiva de la API (OpenAPI y Swagger UI); versión probada con Spring Boot 3.5 -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.12</version>
+        </dependency>
+        <!-- Reinicio automático al guardar cambios en desarrollo -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <!-- Solo se usa al ejecutar, no al compilar -->
+            <scope>runtime</scope>
+            <!-- No se transmite a otros proyectos -->
+            <optional>true</optional>
+        </dependency>
+        <!-- Tomcat embebido, que en producción aporta el Tomcat externo -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <!-- Disponible al compilar, pero no se empaqueta en el WAR -->
+            <scope>provided</scope>
+        </dependency>
+        <!-- Herramientas para pruebas automáticas -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <!-- Solo disponible al ejecutar pruebas -->
+            <scope>test</scope>
+        </dependency>
+        <!-- Herramientas para probar la seguridad con tokens simulados -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <!-- Solo disponible al ejecutar pruebas -->
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- Configuración de la construcción del proyecto -->
+    <build>
+        <!-- Nombre final del WAR, que será la ruta en Tomcat -->
+        <finalName>orvian-api</finalName>
+        <!-- Lista de plugins de Maven -->
+        <plugins>
+            <!-- Plugin que construye el WAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- El archivo con secretos locales nunca debe viajar dentro del WAR; sigue disponible al desarrollar -->
+                    <packagingExcludes>WEB-INF/classes/application-local.properties</packagingExcludes>
+                </configuration>
+            </plugin>
+            <!-- Plugin que empaqueta y ejecuta la aplicación Spring Boot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

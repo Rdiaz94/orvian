@@ -1,0 +1,95 @@
+<!-- Encabezado de la pantalla -->
+<h1 class="h2 fw-bold mb-1">Administración</h1>
+<!-- Aviso sobre cómo se asignan los administradores -->
+<p class="text-secondary small mb-3">Los administradores se asignan directamente en la base de datos; ninguna pantalla puede dar ese rol.</p>
+
+@if (error(); as texto) {
+  <!-- Error devuelto por la API -->
+  <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+    <!-- Motivo del error -->
+    <span>{{ texto }}</span>
+    <!-- Botón para cerrar el aviso -->
+    <button type="button" class="btn-close btn-close-white" aria-label="Cerrar aviso" (click)="error.set(null)"></button>
+  </div>
+}
+
+<!-- Pestañas -->
+<div class="d-flex gap-2 mb-3" role="tablist">
+  <!-- Pestaña de usuarios -->
+  <button type="button" role="tab" class="or-chip border-0" [class.activo]="pestana() === 'usuarios'" [attr.aria-selected]="pestana() === 'usuarios'" (click)="elegir('usuarios')">Usuarios</button>
+  <!-- Pestaña de cursos -->
+  <button type="button" role="tab" class="or-chip border-0" [class.activo]="pestana() === 'cursos'" [attr.aria-selected]="pestana() === 'cursos'" (click)="elegir('cursos')">Cursos</button>
+</div>
+
+@if (pestana() === 'usuarios') {
+  <!-- Tabla de usuarios -->
+  <section class="or-tarjeta p-3" aria-label="Usuarios">
+    <!-- Total de usuarios -->
+    <h2 class="h5 fw-bold mb-3">Usuarios ({{ totalUsuarios() }})</h2>
+    @if (cargandoUsuarios() && usuarios().length === 0) {
+      <!-- Indicador de carga -->
+      <div class="text-center py-3" role="status"><span class="spinner-border spinner-border-sm text-warning" aria-hidden="true"></span><span class="visually-hidden">Cargando</span></div>
+    } @else {
+      <!-- Contenedor con desplazamiento horizontal en pantallas pequeñas -->
+      <div class="table-responsive">
+        <!-- Tabla -->
+        <table class="table align-middle mb-0">
+          <!-- Cabecera -->
+          <thead>
+            <tr><th scope="col">Id</th><th scope="col">Nombre</th><th scope="col">Correo</th><th scope="col">Rol</th><th scope="col">Carrera</th><th scope="col">Ciclo</th></tr>
+          </thead>
+          <!-- Filas -->
+          <tbody>
+            @for (usuario of usuarios(); track usuario.id) {
+              <!-- Un usuario -->
+              <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.nombre }}</td>
+                <td>{{ usuario.correo }}</td>
+                <td><span [class]="usuario.rol === 'ADMIN' ? 'or-chip or-chip-ambar' : 'or-chip'">{{ usuario.rol === 'ADMIN' ? 'Administrador' : 'Estudiante' }}</span></td>
+                <td>{{ usuario.carrera ?? '—' }}</td>
+                <td>{{ usuario.ciclo ?? '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <!-- Paginación -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <!-- Página anterior -->
+        <button type="button" class="or-boton-suave btn-sm" [disabled]="pagina() === 0 || cargandoUsuarios()" (click)="cargarUsuarios(pagina() - 1)">Anterior</button>
+        <!-- Página actual -->
+        <span class="small text-secondary">Página {{ pagina() + 1 }} de {{ totalPaginas() || 1 }}</span>
+        <!-- Página siguiente -->
+        <button type="button" class="or-boton-suave btn-sm" [disabled]="pagina() + 1 >= totalPaginas() || cargandoUsuarios()" (click)="cargarUsuarios(pagina() + 1)">Siguiente</button>
+      </div>
+    }
+  </section>
+} @else {
+  <!-- Gestión de cursos -->
+  <section class="or-tarjeta p-4" aria-label="Cursos">
+    <!-- Título -->
+    <h2 class="h5 fw-bold mb-3">Cursos ({{ cursos().length }})</h2>
+    @if (mensaje(); as texto) {
+      <!-- Aviso de éxito -->
+      <div class="alert alert-success" role="status">{{ texto }}</div>
+    }
+    <!-- Formulario para crear un curso -->
+    <form class="d-flex gap-2 mb-3" [formGroup]="formulario" (ngSubmit)="crearCurso()" novalidate>
+      <!-- Campo del nombre -->
+      <input type="text" class="form-control or-campo" formControlName="nombre" placeholder="Nombre del nuevo curso" aria-label="Nombre del nuevo curso" [class.is-invalid]="formulario.controls.nombre.invalid && formulario.controls.nombre.touched" />
+      <!-- Botón de creación -->
+      <button type="submit" class="or-boton" [disabled]="creando()">Crear curso</button>
+    </form>
+    <!-- Lista de cursos -->
+    <ul class="list-unstyled mb-0">
+      @for (curso of cursos(); track curso.id) {
+        <!-- Un curso -->
+        <li class="py-2 border-bottom border-secondary-subtle"><i class="bi bi-journal-text me-2 text-secondary"></i>{{ curso.nombre }}</li>
+      } @empty {
+        <!-- Mensaje cuando no hay cursos -->
+        <li class="text-secondary">Todavía no hay cursos.</li>
+      }
+    </ul>
+  </section>
+}

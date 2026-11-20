@@ -1,0 +1,31 @@
+// Banner principal de la pantalla de inicio
+.banner {
+  // Alto mínimo
+  min-height: 14rem;
+  // Contenido alineado abajo
+  display: flex;
+  // Elementos en columna
+  flex-direction: column;
+  // Alinea el contenido abajo
+  justify-content: flex-end;
+  // Espacio interior
+  padding: 2rem 2.5rem;
+  // Esquinas muy redondeadas
+  border-radius: 2rem;
+  // Degradado oscuro a la izquierda y de colores a la derecha
+  background:
+    linear-gradient(90deg, #000000 0, rgba(0, 0, 0, 0.8) 40%, transparent),
+    linear-gradient(135deg, #1762ca, #ad29ff);
+}
+
+// Etiqueta pequeña del banner
+.banner-etiqueta {
+  // Color ámbar
+  color: var(--or-ambar);
+  // Texto grueso
+  font-weight: 800;
+  // Letras separadas
+  letter-spacing: 0.15em;
+  // Tamaño pequeño
+  font-size: 0.8rem;
+}

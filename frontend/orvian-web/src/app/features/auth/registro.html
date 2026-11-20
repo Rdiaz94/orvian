@@ -1,0 +1,114 @@
+<!-- Pantalla dividida: formulario a la izquierda y arte de la marca a la derecha -->
+<main class="auth">
+  <!-- Zona del formulario -->
+  <section class="auth-lado">
+    <!-- Caja del formulario -->
+    <div class="auth-caja">
+      <!-- Logo de la marca -->
+      <app-logo />
+      <!-- Título -->
+      <h1 class="auth-titulo">Crea tu cuenta</h1>
+      <!-- Subtítulo -->
+      <p class="text-secondary mb-4">Solo te tomará un minuto</p>
+
+      @if (error(); as mensaje) {
+        <!-- Error devuelto por la API -->
+        <div class="alert alert-danger" role="alert">{{ mensaje }}</div>
+      }
+
+      <!-- Formulario de registro -->
+      <form [formGroup]="formulario" (ngSubmit)="registrar()" novalidate>
+        <!-- Campo del nombre -->
+        <div class="mb-3">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="nombre">Nombre completo</label>
+          <!-- Campo con ícono -->
+          <div class="campo-icono">
+            <!-- Ícono de persona -->
+            <i class="bi bi-person icono" aria-hidden="true"></i>
+            <!-- Campo de texto -->
+            <input id="nombre" type="text" class="form-control or-campo" formControlName="nombre" autocomplete="name" [class.is-invalid]="invalido(formulario.controls.nombre) || erroresServidor()['nombre']" />
+          </div>
+          @if (invalido(formulario.controls.nombre) || erroresServidor()['nombre']) {
+            <!-- Mensaje de validación -->
+            <div class="error-campo">{{ erroresServidor()['nombre'] ?? 'El nombre es obligatorio.' }}</div>
+          }
+        </div>
+        <!-- Campo del correo -->
+        <div class="mb-3">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="correo">Correo</label>
+          <!-- Campo con ícono -->
+          <div class="campo-icono">
+            <!-- Ícono de sobre -->
+            <i class="bi bi-envelope icono" aria-hidden="true"></i>
+            <!-- Campo de texto -->
+            <input id="correo" type="email" class="form-control or-campo" formControlName="correo" autocomplete="username" placeholder="nombre@universidad.edu.pe" [class.is-invalid]="invalido(formulario.controls.correo) || erroresServidor()['correo']" />
+          </div>
+          @if (invalido(formulario.controls.correo) || erroresServidor()['correo']) {
+            <!-- Mensaje de validación -->
+            <div class="error-campo">{{ erroresServidor()['correo'] ?? 'Escribe un correo válido.' }}</div>
+          }
+        </div>
+        <!-- Campo de la contraseña -->
+        <div class="mb-3">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="contrasena">Contraseña</label>
+          <!-- Campo con ícono -->
+          <div class="campo-icono">
+            <!-- Ícono de candado -->
+            <i class="bi bi-lock icono" aria-hidden="true"></i>
+            <!-- Campo de texto -->
+            <input id="contrasena" [type]="verClave() ? 'text' : 'password'" class="form-control or-campo" formControlName="contrasena" autocomplete="new-password" [class.is-invalid]="invalido(formulario.controls.contrasena) || erroresServidor()['contrasena']" />
+            <!-- Botón para mostrar u ocultar la contraseña -->
+            <button type="button" class="ver-clave" [attr.aria-label]="verClave() ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="verClave.set(!verClave())"><i class="bi" [class]="verClave() ? 'bi-eye-slash' : 'bi-eye'"></i></button>
+          </div>
+          @if (invalido(formulario.controls.contrasena) || erroresServidor()['contrasena']) {
+            <!-- Mensaje de validación -->
+            <div class="error-campo">{{ erroresServidor()['contrasena'] ?? 'Debe tener entre 8 y 72 caracteres.' }}</div>
+          }
+        </div>
+        <!-- Carrera y ciclo en una misma fila -->
+        <div class="row g-3 mb-4">
+          <!-- Campo de la carrera -->
+          <div class="col-8">
+            <!-- Etiqueta del campo -->
+            <label class="form-label fw-semibold" for="carrera">Carrera <span class="text-secondary fw-normal">(opcional)</span></label>
+            <!-- Campo con ícono -->
+            <div class="campo-icono">
+              <!-- Ícono de birrete -->
+              <i class="bi bi-mortarboard icono" aria-hidden="true"></i>
+              <!-- Campo de texto -->
+              <input id="carrera" type="text" class="form-control or-campo" formControlName="carrera" />
+            </div>
+          </div>
+          <!-- Campo del ciclo -->
+          <div class="col-4">
+            <!-- Etiqueta del campo -->
+            <label class="form-label fw-semibold" for="ciclo">Ciclo</label>
+            <!-- Campo numérico -->
+            <input id="ciclo" type="number" class="form-control or-campo" formControlName="ciclo" min="1" max="12" [class.is-invalid]="invalido(formulario.controls.ciclo) || erroresServidor()['ciclo']" />
+            @if (invalido(formulario.controls.ciclo) || erroresServidor()['ciclo']) {
+              <!-- Mensaje de validación -->
+              <div class="error-campo">{{ erroresServidor()['ciclo'] ?? 'De 1 a 12.' }}</div>
+            }
+          </div>
+        </div>
+        <!-- Botón de envío -->
+        <button type="submit" class="or-boton w-100" [disabled]="cargando()">
+          @if (cargando()) {
+            <!-- Indicador de carga -->
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+          }
+          Crear cuenta
+        </button>
+      </form>
+
+      <!-- Enlace al inicio de sesión -->
+      <p class="text-secondary mt-4 mb-0">¿Ya tienes cuenta? <a routerLink="/login" class="fw-semibold">Inicia sesión</a></p>
+    </div>
+  </section>
+
+  <!-- Panel de arte, visible en pantallas grandes -->
+  <app-arte-auth class="d-none d-lg-flex" titulo="Tu carrera, más organizada" texto="Crea tu cuenta y empieza a compartir con tus compañeros: tareas, recursos y grupos de trabajo en un mismo lugar." tarjetaTitulo="Únete y colabora" tarjetaTexto="Forma equipos, reparte tareas y mantén todo el material de estudio a la mano." />
+</main>

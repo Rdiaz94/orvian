@@ -1,0 +1,116 @@
+<!-- Encabezado de la pantalla -->
+<h1 class="h2 fw-bold mb-3">Perfil</h1>
+
+<!-- Tarjeta con la identidad del usuario -->
+<header class="or-tarjeta p-4 mb-3 d-flex flex-wrap align-items-center gap-3">
+  <!-- Círculo con las iniciales -->
+  <span class="or-icono or-morado fw-bold" style="width: 4rem; height: 4rem; font-size: 1.4rem" aria-hidden="true">{{ iniciales() }}</span>
+  <!-- Datos de la cuenta -->
+  <div class="flex-grow-1">
+    <!-- Nombre -->
+    <h2 class="h4 fw-bold mb-0">{{ auth.usuario()?.nombre }}</h2>
+    <!-- Correo, que no se puede cambiar -->
+    <p class="text-secondary mb-1">{{ auth.usuario()?.correo }}</p>
+    <!-- Rol -->
+    <span [class]="auth.esAdmin() ? 'or-chip or-chip-ambar' : 'or-chip'">{{ auth.esAdmin() ? 'Administrador' : 'Estudiante' }}</span>
+  </div>
+  <!-- Botón para cerrar la sesión -->
+  <button type="button" class="or-boton-suave" (click)="salir()"><i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión</button>
+</header>
+
+@if (resumen(); as r) {
+  <!-- Estadísticas del usuario -->
+  <section class="row g-3 mb-3" aria-label="Estadísticas">
+    <!-- Tareas hechas -->
+    <div class="col-6 col-lg-3"><div class="or-tarjeta p-3 h-100"><small class="text-secondary">Tareas hechas</small><div class="fs-2 fw-bold">{{ r.tareasHechas }}</div><small class="text-secondary">de {{ r.tareasTotales }}</small></div></div>
+    <!-- Cumplimiento -->
+    <div class="col-6 col-lg-3"><div class="or-tarjeta p-3 h-100"><small class="text-secondary">Cumplimiento</small><div class="fs-2 fw-bold">{{ r.porcentajeCumplimiento }}%</div><div class="progress or-progreso mt-2"><div class="progress-bar" [style.width.%]="r.porcentajeCumplimiento"></div></div></div></div>
+    <!-- Grupos -->
+    <div class="col-6 col-lg-3"><div class="or-tarjeta p-3 h-100"><small class="text-secondary">Grupos activos</small><div class="fs-2 fw-bold">{{ r.gruposActivos }}</div></div></div>
+    <!-- Recursos -->
+    <div class="col-6 col-lg-3"><div class="or-tarjeta p-3 h-100"><small class="text-secondary">Recursos compartidos</small><div class="fs-2 fw-bold">{{ r.recursosCompartidos }}</div></div></div>
+  </section>
+}
+
+<!-- Formularios en dos columnas -->
+<div class="row g-3">
+  <!-- Datos personales -->
+  <section class="col-12 col-lg-6" aria-label="Datos personales">
+    <div class="or-tarjeta p-4 h-100">
+      <!-- Título -->
+      <h2 class="h5 fw-bold mb-3">Datos personales</h2>
+      @if (mensajeDatos(); as mensaje) {
+        <!-- Aviso de éxito -->
+        <div class="alert alert-success" role="status">{{ mensaje }}</div>
+      }
+      @if (errorDatos(); as mensaje) {
+        <!-- Error devuelto por la API -->
+        <div class="alert alert-danger" role="alert">{{ mensaje }}</div>
+      }
+      <!-- Formulario de datos -->
+      <form id="form-datos" [formGroup]="datos" (ngSubmit)="guardarDatos()" novalidate>
+        <!-- Campo del nombre -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold" for="nombre">Nombre completo</label>
+          <input id="nombre" type="text" class="form-control or-campo" formControlName="nombre" autocomplete="name" [class.is-invalid]="invalido(datos.controls.nombre) || erroresServidor()['nombre']" />
+          <div class="invalid-feedback">{{ erroresServidor()['nombre'] ?? 'El nombre es obligatorio.' }}</div>
+        </div>
+        <!-- Carrera y ciclo -->
+        <div class="row g-3 mb-4">
+          <!-- Campo de la carrera -->
+          <div class="col-8">
+            <label class="form-label fw-semibold" for="carrera">Carrera</label>
+            <input id="carrera" type="text" class="form-control or-campo" formControlName="carrera" />
+          </div>
+          <!-- Campo del ciclo -->
+          <div class="col-4">
+            <label class="form-label fw-semibold" for="ciclo">Ciclo</label>
+            <input id="ciclo" type="number" min="1" max="12" class="form-control or-campo" formControlName="ciclo" [class.is-invalid]="invalido(datos.controls.ciclo) || erroresServidor()['ciclo']" />
+            <div class="invalid-feedback">{{ erroresServidor()['ciclo'] ?? 'De 1 a 12.' }}</div>
+          </div>
+        </div>
+        <!-- Botón de guardado -->
+        <button type="submit" class="or-boton" [disabled]="guardandoDatos()">Guardar cambios</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Cambio de contraseña -->
+  <section class="col-12 col-lg-6" aria-label="Cambiar contraseña">
+    <div class="or-tarjeta p-4 h-100">
+      <!-- Título -->
+      <h2 class="h5 fw-bold mb-3">Cambiar contraseña</h2>
+      @if (mensajeClave(); as mensaje) {
+        <!-- Aviso de éxito -->
+        <div class="alert alert-success" role="status">{{ mensaje }}</div>
+      }
+      @if (errorClave(); as mensaje) {
+        <!-- Error devuelto por la API -->
+        <div class="alert alert-danger" role="alert">{{ mensaje }}</div>
+      }
+      <!-- Formulario de contraseña -->
+      <form id="form-clave" [formGroup]="clave" (ngSubmit)="cambiarClave()" novalidate>
+        <!-- Contraseña actual -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold" for="actual">Contraseña actual</label>
+          <input id="actual" type="password" class="form-control or-campo" formControlName="actual" autocomplete="current-password" [class.is-invalid]="invalido(clave.controls.actual)" />
+          <div class="invalid-feedback">Escribe tu contraseña actual.</div>
+        </div>
+        <!-- Contraseña nueva -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold" for="nueva">Contraseña nueva</label>
+          <input id="nueva" type="password" class="form-control or-campo" formControlName="nueva" autocomplete="new-password" [class.is-invalid]="invalido(clave.controls.nueva)" />
+          <div class="invalid-feedback">Debe tener entre 8 y 72 caracteres.</div>
+        </div>
+        <!-- Confirmación -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold" for="confirmacion">Repite la contraseña nueva</label>
+          <input id="confirmacion" type="password" class="form-control or-campo" formControlName="confirmacion" autocomplete="new-password" [class.is-invalid]="clave.controls.confirmacion.touched && (clave.controls.confirmacion.invalid || clave.hasError('noCoinciden'))" />
+          <div class="invalid-feedback">Las contraseñas no coinciden.</div>
+        </div>
+        <!-- Botón de cambio -->
+        <button type="submit" class="or-boton" [disabled]="guardandoClave()">Cambiar contraseña</button>
+      </form>
+    </div>
+  </section>
+</div>

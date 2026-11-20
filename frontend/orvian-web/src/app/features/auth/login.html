@@ -1,0 +1,76 @@
+<!-- Pantalla dividida: formulario a la izquierda y arte de la marca a la derecha -->
+<main class="auth">
+  <!-- Zona del formulario -->
+  <section class="auth-lado">
+    <!-- Caja del formulario -->
+    <div class="auth-caja">
+      <!-- Logo de la marca -->
+      <app-logo />
+      <!-- Título -->
+      <h1 class="auth-titulo">Inicia sesión</h1>
+      <!-- Subtítulo -->
+      <p class="text-secondary mb-4">Usa tu correo universitario</p>
+
+      @if (expirada) {
+        <!-- Aviso de sesión vencida -->
+        <div class="alert alert-warning" role="alert">Tu sesión venció. Inicia sesión de nuevo.</div>
+      }
+      @if (error(); as mensaje) {
+        <!-- Error devuelto por la API -->
+        <div class="alert alert-danger" role="alert">{{ mensaje }}</div>
+      }
+
+      <!-- Formulario de acceso -->
+      <form [formGroup]="formulario" (ngSubmit)="ingresar()" novalidate>
+        <!-- Campo del correo -->
+        <div class="mb-3">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="correo">Correo</label>
+          <!-- Campo con ícono -->
+          <div class="campo-icono">
+            <!-- Ícono de sobre -->
+            <i class="bi bi-envelope icono" aria-hidden="true"></i>
+            <!-- Campo de texto -->
+            <input id="correo" type="email" class="form-control or-campo" formControlName="correo" autocomplete="username" placeholder="nombre@universidad.pe" [class.is-invalid]="invalido(formulario.controls.correo)" />
+          </div>
+          @if (invalido(formulario.controls.correo)) {
+            <!-- Mensaje de validación -->
+            <div class="error-campo">Escribe un correo válido.</div>
+          }
+        </div>
+        <!-- Campo de la contraseña -->
+        <div class="mb-4">
+          <!-- Etiqueta del campo -->
+          <label class="form-label fw-semibold" for="contrasena">Contraseña</label>
+          <!-- Campo con ícono -->
+          <div class="campo-icono">
+            <!-- Ícono de candado -->
+            <i class="bi bi-lock icono" aria-hidden="true"></i>
+            <!-- Campo de texto -->
+            <input id="contrasena" [type]="verClave() ? 'text' : 'password'" class="form-control or-campo" formControlName="contrasena" autocomplete="current-password" [class.is-invalid]="invalido(formulario.controls.contrasena)" />
+            <!-- Botón para mostrar u ocultar la contraseña -->
+            <button type="button" class="ver-clave" [attr.aria-label]="verClave() ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="verClave.set(!verClave())"><i class="bi" [class]="verClave() ? 'bi-eye-slash' : 'bi-eye'"></i></button>
+          </div>
+          @if (invalido(formulario.controls.contrasena)) {
+            <!-- Mensaje de validación -->
+            <div class="error-campo">Escribe tu contraseña.</div>
+          }
+        </div>
+        <!-- Botón de envío -->
+        <button type="submit" class="or-boton w-100" [disabled]="cargando()">
+          @if (cargando()) {
+            <!-- Indicador de carga -->
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+          }
+          Ingresar
+        </button>
+      </form>
+
+      <!-- Enlace al registro -->
+      <p class="text-secondary mt-4 mb-0">¿No tienes cuenta? <a routerLink="/registro" class="fw-semibold">Regístrate</a></p>
+    </div>
+  </section>
+
+  <!-- Panel de arte, visible en pantallas grandes -->
+  <app-arte-auth class="d-none d-lg-flex" titulo="Bienvenido a Orvian" texto="Organiza tus tareas, comparte recursos y forma grupos de trabajo con tus compañeros, todo en un solo lugar." tarjetaTitulo="Estudiar en equipo, sin perder el rumbo" tarjetaTexto="Tareas, recursos y grupos pensados para estudiantes de Ingeniería de Sistemas." />
+</main>

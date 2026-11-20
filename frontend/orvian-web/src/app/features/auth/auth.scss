@@ -1,0 +1,117 @@
+// Pantalla completa dividida en formulario y panel de arte
+.auth {
+  // Distribución horizontal
+  display: flex;
+  // Espacio entre las dos mitades
+  gap: 1rem;
+  // Ocupa toda la altura de la pantalla
+  min-height: 100vh;
+  // Margen alrededor, para que el panel de arte flote
+  padding: 1rem;
+  // Fondo negro con un resplandor suave
+  background: radial-gradient(60rem 40rem at 0% 0%, rgba(23, 98, 202, 0.14), transparent 60%), #050508;
+}
+
+// Mitad del formulario
+.auth-lado {
+  // Ocupa la mitad del ancho
+  flex: 1 1 50%;
+  // Centra la caja del formulario
+  display: flex;
+  // Centrado horizontal
+  justify-content: center;
+  // Centrado vertical
+  align-items: center;
+  // Espacio interior
+  padding: 1.5rem 1rem;
+}
+
+// Caja del formulario, sin tarjeta, como en el diseño de referencia
+.auth-caja {
+  // Ocupa el ancho disponible hasta un máximo
+  width: 100%;
+  // Ancho máximo
+  max-width: 26rem;
+}
+
+// Título grande
+.auth-titulo {
+  // Tamaño grande
+  font-size: 2.1rem;
+  // Texto muy grueso
+  font-weight: 800;
+  // Letras algo más juntas
+  letter-spacing: -0.03em;
+  // Espacios
+  margin: 1.75rem 0 0.25rem;
+}
+
+// Campo con ícono dentro
+.campo-icono {
+  // Para ubicar el ícono y el botón del ojo
+  position: relative;
+
+  // Ícono a la izquierda
+  .icono {
+    // Ubicado sobre el campo
+    position: absolute;
+    // Margen izquierdo
+    left: 1rem;
+    // Centrado vertical
+    top: 50%;
+    // Centrado exacto
+    transform: translateY(-50%);
+    // Color ámbar
+    color: var(--or-ambar);
+    // No intercepta los clics
+    pointer-events: none;
+  }
+
+  // Campo de texto con espacio para el ícono
+  .form-control {
+    // Espacio para el ícono de la izquierda
+    padding-left: 2.8rem;
+    // Espacio para el botón del ojo
+    padding-right: 2.8rem;
+    // Quita el ícono de error de Bootstrap, que chocaría con el botón del ojo
+    background-image: none;
+  }
+}
+
+// Botón del ojo para mostrar la contraseña
+.ver-clave {
+  // Ubicado sobre el campo
+  position: absolute;
+  // Margen derecho
+  right: 0.5rem;
+  // Centrado vertical
+  top: 50%;
+  // Centrado exacto
+  transform: translateY(-50%);
+  // Sin fondo
+  background: transparent;
+  // Sin borde
+  border: 0;
+  // Color apagado
+  color: var(--or-suave);
+  // Espacio interior
+  padding: 0.4rem 0.6rem;
+  // Forma de píldora
+  border-radius: 999px;
+
+  // Al pasar el cursor
+  &:hover {
+    // Texto blanco
+    color: #ffffff;
+  }
+}
+
+// Mensaje de error debajo de un campo
+.error-campo {
+  // Color rojo claro
+  color: #ff6b78;
+  // Tamaño pequeño
+  font-size: 0.85rem;
+  // Espacio superior
+  margin-top: 0.35rem;
+}

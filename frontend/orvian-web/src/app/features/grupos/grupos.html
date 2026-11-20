@@ -1,0 +1,56 @@
+<!-- Encabezado de la pantalla -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <!-- Título -->
+  <h1 class="h2 fw-bold mb-0">Grupos</h1>
+  <!-- Botón para crear un grupo -->
+  <button type="button" class="or-boton" (click)="dialogoAbierto.set(true)"><i class="bi bi-plus-lg me-1"></i>Crear grupo</button>
+</div>
+
+@if (error(); as mensaje) {
+  <!-- Error devuelto por la API -->
+  <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+    <!-- Motivo del error -->
+    <span>{{ mensaje }}</span>
+    <!-- Botón para cerrar el aviso -->
+    <button type="button" class="btn-close btn-close-white" aria-label="Cerrar aviso" (click)="error.set(null)"></button>
+  </div>
+}
+
+@if (cargando() && grupos().length === 0) {
+  <!-- Indicador de carga -->
+  <div class="text-center py-4" role="status"><span class="spinner-border text-warning" aria-hidden="true"></span><span class="visually-hidden">Cargando</span></div>
+} @else if (grupos().length === 0) {
+  <!-- Mensaje cuando no hay grupos -->
+  <p class="text-secondary">Todavía no perteneces a ningún grupo. Crea el primero o pide que te inviten.</p>
+} @else {
+  <!-- Rejilla de grupos -->
+  <div class="rejilla">
+    @for (grupo of grupos(); track grupo.id; let i = $index) {
+      <!-- Tarjeta de un grupo; lleva a su detalle -->
+      <a class="or-tarjeta p-3 d-block text-decoration-none text-reset" [routerLink]="['/grupos', grupo.id]">
+        <!-- Portada de color -->
+        <div [class]="'or-portada or-g' + (i % 6)"></div>
+        <!-- Nombre -->
+        <h2 class="h6 mt-3 mb-1">{{ grupo.nombre }}</h2>
+        <!-- Curso -->
+        <small class="text-secondary d-block">{{ grupo.cursoNombre ?? 'Sin curso' }}</small>
+        @if (grupo.descripcion) {
+          <!-- Descripción -->
+          <p class="small text-secondary mt-2 mb-0">{{ grupo.descripcion }}</p>
+        }
+        <!-- Papel del usuario -->
+        <div class="mt-2"><span [class]="grupo.miRol === 'LIDER' ? 'or-chip or-chip-ambar' : 'or-chip'">{{ grupo.miRol === 'LIDER' ? 'Líder' : 'Miembro' }}</span></div>
+      </a>
+    }
+  </div>
+}
+
+@if (hayMas()) {
+  <!-- Carga la página siguiente -->
+  <div class="text-center mt-3"><button type="button" class="or-boton-suave" [disabled]="cargando()" (click)="cargar(pagina() + 1)">Ver más</button></div>
+}
+
+@if (dialogoAbierto()) {
+  <!-- Diálogo para crear un grupo -->
+  <app-grupo-formulario [cursos]="cursos()" (creado)="alCrear($event)" (cancelado)="dialogoAbierto.set(false)" />
+}

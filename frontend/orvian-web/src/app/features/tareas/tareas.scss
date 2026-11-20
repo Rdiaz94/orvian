@@ -1,0 +1,21 @@
+// Columna del tablero
+.columna {
+  // Alto mínimo para poder soltar tareas en una columna vacía
+  min-height: 12rem;
+}
+
+// Tarjeta de una tarea
+.tarea {
+  // Fondo un poco más claro que la columna
+  background: var(--or-superficie-2);
+  // Indica que se puede arrastrar
+  cursor: grab;
+}
+
+// Etiqueta de tarea vencida
+.vencida {
+  // Fondo rojo
+  background: #c62f3b;
+  // Texto blanco
+  color: #ffffff;
+}

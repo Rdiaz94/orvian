@@ -1,0 +1,214 @@
+@if (cargando()) {
+  <!-- Indicador de carga -->
+  <div class="text-center py-5" role="status"><span class="spinner-border text-warning" aria-hidden="true"></span><span class="visually-hidden">Cargando</span></div>
+} @else if (detalle(); as d) {
+  <!-- Enlace para volver a la lista -->
+  <a routerLink="/grupos" class="text-secondary text-decoration-none small"><i class="bi bi-arrow-left me-1"></i>Todos los grupos</a>
+
+  @if (error(); as mensaje) {
+    <!-- Error devuelto por la API -->
+    <div class="alert alert-danger d-flex justify-content-between align-items-center mt-2" role="alert">
+      <!-- Motivo del error -->
+      <span>{{ mensaje }}</span>
+      <!-- Botón para cerrar el aviso -->
+      <button type="button" class="btn-close btn-close-white" aria-label="Cerrar aviso" (click)="error.set(null)"></button>
+    </div>
+  }
+
+  <!-- Cabecera del grupo -->
+  <header class="or-tarjeta p-4 mt-2 mb-3">
+    <!-- Nombre y papel -->
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <!-- Nombre del grupo -->
+      <h1 class="h2 fw-bold mb-0">{{ d.grupo.nombre }}</h1>
+      <!-- Papel del usuario -->
+      <span [class]="soyLider() ? 'or-chip or-chip-ambar' : 'or-chip'">{{ soyLider() ? 'Líder' : 'Miembro' }}</span>
+    </div>
+    <!-- Curso -->
+    <p class="text-secondary mb-0 mt-1">{{ d.grupo.cursoNombre ?? 'Sin curso' }}</p>
+    @if (d.grupo.descripcion) {
+      <!-- Descripción -->
+      <p class="mt-2 mb-0">{{ d.grupo.descripcion }}</p>
+    }
+  </header>
+
+  <!-- Integrantes -->
+  <section class="or-tarjeta p-4 mb-3" aria-label="Integrantes">
+    <!-- Título de la sección -->
+    <h2 class="h5 fw-bold mb-3">Integrantes ({{ integrantes().length }})</h2>
+    <!-- Lista de integrantes -->
+    <ul class="list-unstyled mb-3">
+      @for (integrante of integrantes(); track integrante.usuarioId) {
+        <!-- Un integrante -->
+        <li class="d-flex align-items-center gap-3 py-2 border-bottom border-secondary-subtle">
+          <!-- Círculo con la inicial -->
+          <span class="or-icono or-morado fw-bold" aria-hidden="true">{{ integrante.nombre.charAt(0).toUpperCase() }}</span>
+          <!-- Datos del integrante -->
+          <div class="flex-grow-1">
+            <!-- Nombre -->
+            <div class="fw-semibold">{{ integrante.nombre }}@if (integrante.usuarioId === miId()) { <span class="text-secondary fw-normal"> (tú)</span> }</div>
+            <!-- Carrera y ciclo -->
+            <small class="text-secondary">{{ integrante.carrera ?? 'Sin carrera' }}@if (integrante.ciclo) { · Ciclo {{ integrante.ciclo }} }</small>
+          </div>
+          <!-- Papel -->
+          <span [class]="integrante.rolGrupo === 'LIDER' ? 'or-chip or-chip-ambar' : 'or-chip'">{{ integrante.rolGrupo === 'LIDER' ? 'Líder' : 'Miembro' }}</span>
+          @if (soyLider() && integrante.usuarioId !== miId()) {
+            @if (esperando('integrante', integrante.usuarioId)) {
+              <!-- Confirmación de expulsión -->
+              <button type="button" class="btn btn-danger btn-sm rounded-pill" (click)="confirmar()">Sí, quitar</button>
+              <!-- Cancela la expulsión -->
+              <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set(null)">No</button>
+            } @else {
+              <!-- Pide confirmar la expulsión -->
+              <button type="button" class="or-boton-suave btn-sm" [attr.aria-label]="'Quitar a ' + integrante.nombre" (click)="confirmando.set({ tipo: 'integrante', id: integrante.usuarioId })"><i class="bi bi-person-dash"></i></button>
+            }
+          }
+        </li>
+      }
+    </ul>
+
+    @if (soyLider()) {
+      <!-- Formulario para invitar por correo, solo para el líder -->
+      <form class="d-flex gap-2" [formGroup]="invitacion" (ngSubmit)="invitar()" novalidate>
+        <!-- Campo del correo -->
+        <input type="email" class="form-control or-campo" formControlName="correo" placeholder="Correo de la persona a invitar" aria-label="Correo de la persona a invitar" [class.is-invalid]="invitacion.controls.correo.invalid && invitacion.controls.correo.touched" />
+        <!-- Botón de invitación -->
+        <button type="submit" class="or-boton" [disabled]="invitando()">Invitar</button>
+      </form>
+    }
+
+    <!-- Acciones sobre el grupo -->
+    <div class="d-flex gap-2 mt-3">
+      @if (soyLider()) {
+        @if (esperando('grupo')) {
+          <!-- Confirmación de eliminación -->
+          <span class="small text-secondary align-self-center">Se borrarán también sus tareas y recursos.</span>
+          <button type="button" class="btn btn-danger btn-sm rounded-pill" (click)="confirmar()">Sí, eliminar grupo</button>
+          <!-- Cancela la eliminación -->
+          <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set(null)">No</button>
+        } @else {
+          <!-- Pide confirmar la eliminación -->
+          <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set({ tipo: 'grupo' })"><i class="bi bi-trash me-1"></i>Eliminar grupo</button>
+        }
+      } @else {
+        @if (esperando('abandono')) {
+          <!-- Confirmación de salida -->
+          <button type="button" class="btn btn-danger btn-sm rounded-pill" (click)="confirmar()">Sí, abandonar</button>
+          <!-- Cancela la salida -->
+          <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set(null)">No</button>
+        } @else {
+          <!-- Pide confirmar la salida -->
+          <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set({ tipo: 'abandono' })"><i class="bi bi-box-arrow-left me-1"></i>Abandonar grupo</button>
+        }
+      }
+    </div>
+  </section>
+
+  <!-- Tareas compartidas -->
+  <section class="or-tarjeta p-4" aria-label="Tareas del grupo">
+    <!-- Encabezado de la sección -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <!-- Título de la sección -->
+      <h2 class="h5 fw-bold mb-0">Tareas del grupo ({{ totalTareas() }})</h2>
+      <!-- Botón para crear una tarea -->
+      <button type="button" class="or-boton btn-sm" (click)="abrirNueva()"><i class="bi bi-plus-lg me-1"></i>Nueva tarea</button>
+    </div>
+    <!-- Filtro por estado -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <!-- Todas las tareas -->
+      <button type="button" class="or-chip border-0" [class.activo]="filtro() === null" (click)="cambiarFiltro(null)">Todas</button>
+      @for (estado of estados; track estado) {
+        <!-- Un estado -->
+        <button type="button" class="or-chip border-0" [class.activo]="filtro() === estado" (click)="cambiarFiltro(estado)">{{ textoEstado[estado] }}</button>
+      }
+    </div>
+
+    @if (tareas().length === 0) {
+      <!-- Mensaje cuando no hay tareas -->
+      <p class="text-secondary mb-0">No hay tareas en esta vista.</p>
+    }
+
+    @for (tarea of tareas(); track tarea.id) {
+      <!-- Una tarea del grupo -->
+      <article class="or-tarjeta p-3 mb-2" style="background: var(--or-superficie-2)">
+        <!-- Estado, aviso de vencida y responsable -->
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+          <!-- Estado -->
+          <span [class]="claseEstado[tarea.estado]">{{ textoEstado[tarea.estado] }}</span>
+          @if (vencida(tarea)) {
+            <!-- Aviso de tarea vencida -->
+            <span class="or-chip" style="background: #c62f3b">Vencida</span>
+          }
+          <!-- Persona asignada -->
+          <small class="text-secondary"><i class="bi bi-person me-1"></i>{{ tarea.responsableNombre }}</small>
+        </div>
+        <!-- Título -->
+        <h3 class="h6 mb-1">{{ tarea.titulo }}</h3>
+        <!-- Fecha límite -->
+        <small class="text-secondary d-block">
+          {{ tarea.cursoNombre ?? 'Sin curso' }}
+          @if (tarea.fechaVencimiento) {
+            · {{ tarea.fechaVencimiento | date: 'd MMM, h:mm a' }}
+          }
+        </small>
+        @if (tarea.estado === 'EN_PROGRESO') {
+          <!-- Avance de la tarea -->
+          <label class="d-flex align-items-center gap-2 mt-2 small text-secondary">
+            <!-- Control deslizante, solo para quien puede cambiarlo -->
+            <input type="range" class="form-range" min="1" max="99" [value]="tarea.progreso" [disabled]="!puedeAvanzar(tarea)" (change)="cambiarAvance(tarea, $event)" [attr.aria-label]="'Avance de ' + tarea.titulo" />
+            <!-- Porcentaje actual -->
+            <span>{{ tarea.progreso }}%</span>
+          </label>
+        }
+        <!-- Acciones de la tarea -->
+        <div class="d-flex flex-wrap gap-2 mt-2">
+          @if (puedeAvanzar(tarea)) {
+            @if (tarea.estado === 'PENDIENTE') {
+              <!-- Empieza la tarea -->
+              <button type="button" class="or-boton-suave btn-sm" (click)="iniciar(tarea)">Empezar</button>
+            }
+            @if (tarea.estado === 'EN_PROGRESO') {
+              <!-- Termina la tarea -->
+              <button type="button" class="or-boton-suave btn-sm" (click)="cambiarEstado(tarea, 'HECHA', null)">Terminar</button>
+            }
+            @if (tarea.estado === 'HECHA') {
+              <!-- Reabre la tarea -->
+              <button type="button" class="or-boton-suave btn-sm" (click)="cambiarEstado(tarea, 'PENDIENTE', null)">Reabrir</button>
+            }
+          }
+          @if (soyLider()) {
+            <!-- Edita la tarea; solo el líder -->
+            <button type="button" class="or-boton-suave btn-sm" (click)="abrirEdicion(tarea)" [attr.aria-label]="'Editar ' + tarea.titulo"><i class="bi bi-pencil"></i></button>
+            @if (esperando('tarea', tarea.id)) {
+              <!-- Confirmación de borrado -->
+              <button type="button" class="btn btn-danger btn-sm rounded-pill" (click)="confirmar()">Sí, borrar</button>
+              <!-- Cancela el borrado -->
+              <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set(null)">No</button>
+            } @else {
+              <!-- Pide confirmar el borrado -->
+              <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set({ tipo: 'tarea', id: tarea.id })" [attr.aria-label]="'Borrar ' + tarea.titulo"><i class="bi bi-trash"></i></button>
+            }
+          }
+        </div>
+      </article>
+    }
+
+    @if (hayMasTareas()) {
+      <!-- Carga la página siguiente -->
+      <button type="button" class="or-boton-suave w-100 mt-1" (click)="cargarTareas(paginaTareas() + 1)">Ver más</button>
+    }
+  </section>
+
+  @if (dialogoAbierto()) {
+    <!-- Diálogo para crear o editar una tarea del grupo -->
+    <app-tarea-formulario [tarea]="enEdicion()" [cursos]="cursos()" [grupoId]="grupoId()" [integrantes]="integrantes()" [puedeAsignar]="soyLider()" (guardado)="alGuardar()" (cancelado)="dialogoAbierto.set(false)" />
+  }
+} @else if (error(); as mensaje) {
+  <!-- Grupo inexistente o ajeno -->
+  <div class="or-tarjeta p-5 text-center">
+    <!-- Mensaje -->
+    <h1 class="h4 fw-bold">{{ mensaje }}</h1>
+    <!-- Enlace para volver -->
+    <a routerLink="/grupos" class="or-boton mt-3">Volver a mis grupos</a>
+  </div>
+}

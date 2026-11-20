@@ -1,0 +1,156 @@
+// Disposición general: menú a la izquierda y contenido a la derecha
+.shell {
+  // Distribución horizontal
+  display: flex;
+  // Ocupa al menos toda la altura de la pantalla
+  min-height: 100vh;
+}
+
+// Barra lateral fija
+.lateral {
+  // Ancho fijo
+  width: 15rem;
+  // No se encoge
+  flex: none;
+  // Se queda fija al desplazarse
+  position: sticky;
+  // Pegada arriba
+  top: 0;
+  // Altura de la pantalla
+  height: 100vh;
+  // Elementos en columna
+  flex-direction: column;
+  // Espacio entre elementos
+  gap: 0.5rem;
+  // Espacio interior
+  padding: 1.5rem 1rem;
+  // Fondo negro
+  background: #000000;
+  // Línea que la separa del contenido
+  border-right: 1px solid var(--or-borde);
+}
+
+// Nombre de la marca
+.logo {
+  // Color ámbar
+  color: var(--or-ambar);
+  // Texto muy grueso
+  font-weight: 800;
+  // Tamaño grande
+  font-size: 1.6rem;
+  // Sin subrayado
+  text-decoration: none;
+  // Espacio inferior
+  margin-bottom: 1.25rem;
+  // Letras algo más juntas
+  letter-spacing: -0.04em;
+}
+
+// Opción del menú lateral
+.opcion {
+  // Ícono y texto en fila
+  display: flex;
+  // Centrado vertical
+  align-items: center;
+  // Espacio entre ícono y texto
+  gap: 0.75rem;
+  // Espacio interior
+  padding: 0.5rem 0.75rem;
+  // Forma de píldora
+  border-radius: 1.5rem;
+  // Texto claro
+  color: #c9c9d4;
+  // Sin subrayado
+  text-decoration: none;
+  // Texto algo grueso
+  font-weight: 600;
+
+  // Al pasar el cursor
+  &:hover {
+    // Fondo ligeramente más claro
+    background: var(--or-superficie-2);
+    // Texto blanco
+    color: #ffffff;
+  }
+
+  // Opción de la pantalla actual
+  &.activa {
+    // Fondo destacado
+    background: #12121a;
+    // Texto blanco
+    color: #ffffff;
+    // Contorno azul
+    box-shadow: inset 0 0 0 1px var(--or-azul);
+  }
+}
+
+// Zona de contenido
+.contenido {
+  // Ocupa el espacio restante
+  flex: 1;
+  // Permite que el contenido se encoja
+  min-width: 0;
+  // Espacio interior, con margen inferior para la navegación móvil
+  padding: 1.5rem 2rem 6rem;
+  // Degradado sutil en la parte superior
+  background: linear-gradient(#0c0c16, #000000 320px);
+}
+
+// Barra superior
+.superior {
+  // Elementos en fila
+  display: flex;
+  // Centrado vertical
+  align-items: center;
+  // Espacio entre elementos
+  gap: 1rem;
+  // Espacio inferior
+  margin-bottom: 1.5rem;
+}
+
+// Navegación inferior para pantallas pequeñas
+.inferior {
+  // Fija en la parte baja de la pantalla
+  position: fixed;
+  // Pegada abajo
+  bottom: 0;
+  // Pegada a la izquierda
+  left: 0;
+  // Pegada a la derecha
+  right: 0;
+  // Íconos en fila
+  display: flex;
+  // Íconos repartidos
+  justify-content: space-around;
+  // Espacio interior
+  padding: 0.6rem;
+  // Fondo negro
+  background: #000000;
+  // Línea superior
+  border-top: 1px solid var(--or-borde);
+  // Por encima del contenido
+  z-index: 10;
+}
+
+// Opción de la navegación inferior
+.opcion-corta {
+  // Sin subrayado
+  text-decoration: none;
+  // Opacidad reducida cuando no está activa
+  opacity: 0.55;
+
+  // Opción de la pantalla actual
+  &.activa {
+    // Opacidad completa
+    opacity: 1;
+  }
+}
+
+// Ajuste del contenido en pantallas pequeñas
+@media (max-width: 991.98px) {
+  // Menos espacio lateral
+  .contenido {
+    // Espacio interior reducido
+    padding: 1rem 1rem 6rem;
+  }
+}

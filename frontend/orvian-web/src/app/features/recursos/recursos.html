@@ -1,0 +1,82 @@
+<!-- Encabezado de la pantalla -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <!-- Título -->
+  <h1 class="h2 fw-bold mb-0">Recursos</h1>
+  <!-- Botón para compartir un recurso -->
+  <button type="button" class="or-boton" (click)="abrirNuevo()"><i class="bi bi-plus-lg me-1"></i>Compartir recurso</button>
+</div>
+
+@if (error(); as mensaje) {
+  <!-- Error devuelto por la API -->
+  <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+    <!-- Motivo del error -->
+    <span>{{ mensaje }}</span>
+    <!-- Botón para cerrar el aviso -->
+    <button type="button" class="btn-close btn-close-white" aria-label="Cerrar aviso" (click)="error.set(null)"></button>
+  </div>
+}
+
+<!-- Buscador de la pantalla -->
+<form class="d-flex gap-2 mb-3" role="search" (submit)="buscar($event)">
+  <!-- Campo de texto -->
+  <input class="form-control or-campo" type="search" placeholder="Buscar por título" aria-label="Buscar por título" [value]="texto()" (input)="alEscribir($event)" />
+  <!-- Botón de búsqueda -->
+  <button type="submit" class="or-boton-suave"><i class="bi bi-search"></i><span class="visually-hidden">Buscar</span></button>
+</form>
+
+<!-- Filtros por tipo y orden -->
+<div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+  <!-- Todos los tipos -->
+  <button type="button" class="or-chip border-0" [class.activo]="tipo() === null" (click)="cambiarTipo(null)">Todos</button>
+  @for (opcion of tipos; track opcion) {
+    <!-- Un tipo -->
+    <button type="button" class="or-chip border-0" [class.activo]="tipo() === opcion" (click)="cambiarTipo(opcion)">{{ opcion }}</button>
+  }
+  <!-- Separador flexible -->
+  <span class="flex-grow-1"></span>
+  <!-- Orden por más recientes -->
+  <button type="button" class="or-chip border-0" [class.activo]="orden() === 'RECIENTES'" (click)="cambiarOrden('RECIENTES')">Recientes</button>
+  <!-- Orden por más descargados -->
+  <button type="button" class="or-chip border-0" [class.activo]="orden() === 'POPULARES'" (click)="cambiarOrden('POPULARES')">Populares</button>
+</div>
+
+@if (!hayFiltros() && populares().length > 0) {
+  <!-- Fila Top 10, como en Netflix -->
+  <h2 class="h5 fw-bold mb-0">Top 10 más descargados</h2>
+  <div class="or-fila">
+    @for (recurso of populares(); track recurso.id; let i = $index) {
+      <!-- Un recurso del Top 10 -->
+      <div class="or-item">
+        <app-recurso-tarjeta [recurso]="recurso" [indice]="i" [ranking]="i + 1" (abrir)="abrir($event)" (editar)="abrirEdicion($event)" (borrar)="borrar($event)" />
+      </div>
+    }
+  </div>
+}
+
+<!-- Lista principal -->
+<h2 class="h5 fw-bold mt-3 mb-3">{{ hayFiltros() ? 'Resultados (' + total() + ')' : 'Biblioteca' }}</h2>
+@if (cargando() && items().length === 0) {
+  <!-- Indicador de carga -->
+  <div class="text-center py-4" role="status"><span class="spinner-border text-warning" aria-hidden="true"></span><span class="visually-hidden">Cargando</span></div>
+} @else if (items().length === 0) {
+  <!-- Mensaje cuando no hay resultados -->
+  <p class="text-secondary">{{ hayFiltros() ? 'No hay recursos que coincidan con tu búsqueda.' : 'Aún no hay recursos. ¡Comparte el primero!' }}</p>
+} @else {
+  <!-- Rejilla de tarjetas -->
+  <div class="rejilla">
+    @for (recurso of items(); track recurso.id; let i = $index) {
+      <!-- Un recurso -->
+      <app-recurso-tarjeta [recurso]="recurso" [indice]="i" (abrir)="abrir($event)" (editar)="abrirEdicion($event)" (borrar)="borrar($event)" />
+    }
+  </div>
+}
+
+@if (hayMas()) {
+  <!-- Carga la página siguiente -->
+  <div class="text-center mt-3"><button type="button" class="or-boton-suave" [disabled]="cargando()" (click)="cargar(pagina() + 1)">Ver más</button></div>
+}
+
+@if (dialogoAbierto()) {
+  <!-- Diálogo para compartir o editar -->
+  <app-recurso-formulario [recurso]="enEdicion()" [cursos]="cursos()" [grupos]="grupos()" (guardado)="alGuardar()" (cancelado)="cerrarDialogo()" />
+}

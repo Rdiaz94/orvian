@@ -1,0 +1,47 @@
+<!-- Tarjeta de un recurso -->
+<article class="or-tarjeta p-3 h-100 d-flex flex-column">
+  <!-- Portada con el ícono del tipo -->
+  <div [class]="clasePortada()">
+    @if (ranking(); as puesto) {
+      <!-- Número del Top 10 -->
+      <span class="ranking" aria-hidden="true">{{ puesto }}</span>
+    }
+    <!-- Ícono del tipo de recurso -->
+    <i class="bi icono-portada" [class]="iconoTipo[recurso().tipo]" aria-hidden="true"></i>
+  </div>
+  <!-- Etiquetas -->
+  <div class="d-flex flex-wrap gap-1 mt-3">
+    <!-- Tipo de recurso -->
+    <span class="or-chip">{{ textoTipo[recurso().tipo] }}</span>
+    @if (recurso().grupoNombre) {
+      <!-- Indica que es de un grupo y no público -->
+      <span class="or-chip or-chip-morado"><i class="bi bi-lock-fill me-1"></i>{{ recurso().grupoNombre }}</span>
+    }
+  </div>
+  <!-- Título -->
+  <h3 class="h6 mt-2 mb-1">{{ recurso().titulo }}</h3>
+  @if (recurso().descripcion) {
+    <!-- Descripción recortada a dos líneas -->
+    <p class="small text-secondary mb-1 descripcion">{{ recurso().descripcion }}</p>
+  }
+  <!-- Autor, curso y descargas -->
+  <small class="text-secondary mt-auto">{{ recurso().autorNombre }}@if (recurso().cursoNombre) { · {{ recurso().cursoNombre }} } · {{ recurso().descargas }} descargas</small>
+  <!-- Acciones -->
+  <div class="d-flex flex-wrap gap-2 mt-3">
+    <!-- Abre el recurso y registra la descarga -->
+    <button type="button" class="or-boton btn-sm" (click)="abrir.emit(recurso())"><i class="bi bi-box-arrow-up-right me-1"></i>Abrir</button>
+    @if (recurso().esAutor) {
+      <!-- Edita el recurso -->
+      <button type="button" class="or-boton-suave btn-sm" (click)="editar.emit(recurso())" [attr.aria-label]="'Editar ' + recurso().titulo"><i class="bi bi-pencil"></i></button>
+      @if (confirmando()) {
+        <!-- Confirmación de borrado -->
+        <button type="button" class="btn btn-danger btn-sm rounded-pill" (click)="confirmando.set(false); borrar.emit(recurso())">Sí, borrar</button>
+        <!-- Cancela el borrado -->
+        <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set(false)">No</button>
+      } @else {
+        <!-- Pide confirmar el borrado -->
+        <button type="button" class="or-boton-suave btn-sm" (click)="confirmando.set(true)" [attr.aria-label]="'Borrar ' + recurso().titulo"><i class="bi bi-trash"></i></button>
+      }
+    }
+  </div>
+</article>

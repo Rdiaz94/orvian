@@ -1,0 +1,337 @@
+// Colores de la marca Orvian, tomados del diseño aprobado
+:root {
+  // Fondo principal
+  --or-negro: #000000;
+  // Fondo de las tarjetas
+  --or-superficie: #0e0e12;
+  // Fondo de elementos sobre las tarjetas
+  --or-superficie-2: #14141c;
+  // Color de los bordes
+  --or-borde: #1b1b24;
+  // Color principal de acción
+  --or-ambar: #fdba30;
+  // Color de apoyo azul
+  --or-azul: #1762ca;
+  // Color de apoyo morado
+  --or-morado: #ad29ff;
+  // Texto secundario
+  --or-suave: #9a9aa8;
+}
+
+// Tema oscuro de Bootstrap ajustado a la paleta
+[data-bs-theme='dark'] {
+  // Fondo del sitio
+  --bs-body-bg: var(--or-negro);
+  // Color del texto
+  --bs-body-color: #ffffff;
+  // Color primario de Bootstrap
+  --bs-primary: #1762ca;
+  // Color primario en formato RGB
+  --bs-primary-rgb: 23, 98, 202;
+  // Color de advertencia de Bootstrap, usado como ámbar
+  --bs-warning: #fdba30;
+  // Color de advertencia en formato RGB
+  --bs-warning-rgb: 253, 186, 48;
+  // Color de los bordes
+  --bs-border-color: var(--or-borde);
+  // Texto secundario
+  --bs-secondary-color: var(--or-suave);
+}
+
+// Tipografía y fondo del sitio
+body {
+  // Inter si está instalada y, si no, la fuente del sistema
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  // Fondo negro
+  background: var(--or-negro);
+}
+
+// Tarjeta con esquinas muy redondeadas, estilo One UI
+.or-tarjeta {
+  // Fondo oscuro
+  background: var(--or-superficie);
+  // Borde sutil
+  border: 1px solid var(--or-borde);
+  // Esquinas redondeadas
+  border-radius: 1.75rem;
+}
+
+// Botón principal ámbar en forma de píldora
+.or-boton {
+  // Sin subrayado cuando se usa en un enlace
+  text-decoration: none;
+  // Se muestra en línea con su contenido
+  display: inline-block;
+  // Fondo ámbar
+  background: var(--or-ambar);
+  // Texto negro para buen contraste
+  color: #000000;
+  // Texto en negrita
+  font-weight: 700;
+  // Forma de píldora
+  border: 0;
+  // Bordes completamente redondeados
+  border-radius: 999px;
+  // Espacio interior
+  padding: 0.6rem 1.5rem;
+
+  // Estado al pasar el cursor o al enfocar
+  &:hover,
+  &:focus-visible {
+    // Fondo ámbar algo más brillante
+    background: #ffc857;
+    // Texto negro
+    color: #000000;
+  }
+
+  // Estado deshabilitado
+  &:disabled {
+    // Menos opacidad
+    opacity: 0.6;
+  }
+}
+
+// Botón secundario translúcido
+.or-boton-suave {
+  // Sin subrayado cuando se usa en un enlace
+  text-decoration: none;
+  // Fondo translúcido
+  background: rgba(255, 255, 255, 0.12);
+  // Texto blanco
+  color: #ffffff;
+  // Sin borde
+  border: 0;
+  // Forma de píldora
+  border-radius: 999px;
+  // Espacio interior
+  padding: 0.6rem 1.5rem;
+}
+
+// Etiqueta pequeña redondeada
+.or-chip {
+  // Fondo gris oscuro
+  background: #23232e;
+  // Texto blanco
+  color: #ffffff;
+  // Forma de píldora
+  border-radius: 999px;
+  // Espacio interior
+  padding: 0.25rem 0.7rem;
+  // Texto pequeño
+  font-size: 0.75rem;
+  // Texto un poco más grueso
+  font-weight: 600;
+}
+
+// Variante ámbar de la etiqueta
+.or-chip-ambar {
+  // Fondo ámbar
+  background: var(--or-ambar);
+  // Texto negro
+  color: #000000;
+}
+
+// Variante morada de la etiqueta
+.or-chip-morado {
+  // Fondo morado
+  background: var(--or-morado);
+  // Texto blanco
+  color: #ffffff;
+}
+
+// Variante azul de la etiqueta
+.or-chip-azul {
+  // Fondo azul
+  background: var(--or-azul);
+  // Texto blanco
+  color: #ffffff;
+}
+
+// Recuadro redondeado que contiene un ícono, estilo One UI
+.or-icono {
+  // Se alinea al centro
+  display: inline-flex;
+  // Centra horizontalmente
+  justify-content: center;
+  // Centra verticalmente
+  align-items: center;
+  // Ancho fijo
+  width: 2.4rem;
+  // Alto fijo
+  height: 2.4rem;
+  // Esquinas redondeadas
+  border-radius: 0.9rem;
+  // Evita que se encoja
+  flex: none;
+  // Tamaño del ícono
+  font-size: 1.1rem;
+}
+
+// Recuadro ámbar con ícono negro
+.or-ambar {
+  // Fondo ámbar
+  background: var(--or-ambar);
+  // Ícono negro
+  color: #000000;
+}
+
+// Recuadro azul con ícono blanco
+.or-azul {
+  // Fondo azul
+  background: var(--or-azul);
+  // Ícono blanco
+  color: #ffffff;
+}
+
+// Recuadro morado con ícono blanco
+.or-morado {
+  // Fondo morado
+  background: var(--or-morado);
+  // Ícono blanco
+  color: #ffffff;
+}
+
+// Campos de formulario redondeados y oscuros
+.or-campo {
+  // Fondo oscuro
+  background: var(--or-superficie);
+  // Borde sutil
+  border: 1px solid #23232e;
+  // Esquinas redondeadas
+  border-radius: 1.25rem;
+  // Texto blanco
+  color: #ffffff;
+  // Espacio interior
+  padding: 0.7rem 1rem;
+
+  // Estado enfocado
+  &:focus {
+    // Mantiene el fondo
+    background: var(--or-superficie);
+    // Texto blanco
+    color: #ffffff;
+    // Borde ámbar
+    border-color: var(--or-ambar);
+    // Resplandor suave ámbar
+    box-shadow: 0 0 0 0.2rem rgba(253, 186, 48, 0.2);
+  }
+}
+
+// Fila horizontal de tarjetas, como las de Netflix
+.or-fila {
+  // Distribución horizontal
+  display: flex;
+  // Espacio entre tarjetas
+  gap: 1rem;
+  // Desplazamiento horizontal cuando no caben
+  overflow-x: auto;
+  // Espacio para el resplandor de la tarjeta destacada
+  padding: 0.75rem 0.25rem 1rem;
+  // Barra de desplazamiento discreta
+  scrollbar-width: thin;
+  // Los elementos se ajustan al hacer scroll
+  scroll-snap-type: x proximity;
+}
+
+// Elemento de una fila horizontal
+.or-item {
+  // Ancho fijo para que se vea parte del siguiente
+  flex: 0 0 17rem;
+  // Se ajusta al desplazarse
+  scroll-snap-align: start;
+  // Animación suave al pasar el cursor
+  transition: transform 0.15s ease;
+
+  // Al pasar el cursor crece un poco, como en Netflix
+  &:hover {
+    // Agranda ligeramente
+    transform: scale(1.03);
+  }
+}
+
+// Portada con degradado para grupos y recursos
+.or-portada {
+  // Alto de la portada
+  height: 6rem;
+  // Esquinas redondeadas
+  border-radius: 1.25rem;
+}
+
+// Degradado azul
+.or-g0 { background: linear-gradient(135deg, #1762ca, #04122b); }
+// Degradado morado
+.or-g1 { background: linear-gradient(135deg, #ad29ff, #1e0638); }
+// Degradado ámbar
+.or-g2 { background: linear-gradient(135deg, #fdba30, #3d2a00); }
+// Degradado azul a morado
+.or-g3 { background: linear-gradient(135deg, #1762ca, #ad29ff); }
+// Degradado ámbar a morado
+.or-g4 { background: linear-gradient(135deg, #fdba30, #ad29ff); }
+// Degradado morado a azul
+.or-g5 { background: linear-gradient(135deg, #ad29ff, #1762ca); }
+
+// Barra de progreso fina de color ámbar
+.or-progreso {
+  // Fondo de la barra
+  background: #1b1b24;
+  // Alto fino
+  height: 0.35rem;
+  // Bordes redondeados
+  border-radius: 999px;
+
+  // Parte rellena
+  .progress-bar {
+    // Color ámbar
+    background: var(--or-ambar);
+  }
+}
+
+// Fondo oscuro que cubre la pantalla detrás de un diálogo
+.or-modal-fondo {
+  // Cubre toda la ventana
+  position: fixed;
+  // Pegado a los cuatro bordes
+  inset: 0;
+  // Fondo negro translúcido
+  background: rgba(0, 0, 0, 0.72);
+  // Centra el diálogo
+  display: flex;
+  // Centrado horizontal
+  justify-content: center;
+  // Centrado vertical
+  align-items: center;
+  // Por encima de todo el contenido
+  z-index: 1050;
+  // Margen para pantallas pequeñas
+  padding: 1rem;
+}
+
+// Caja del diálogo
+.or-modal {
+  // Ocupa el ancho disponible hasta un máximo
+  width: 100%;
+  // Ancho máximo
+  max-width: 34rem;
+  // Altura máxima con desplazamiento si hace falta
+  max-height: 92vh;
+  // Desplazamiento vertical
+  overflow-y: auto;
+}
+
+// Rejilla de tarjetas que se adapta al ancho disponible
+.rejilla {
+  // Distribución en cuadrícula
+  display: grid;
+  // Columnas que se adaptan al ancho disponible
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  // Espacio entre tarjetas
+  gap: 1rem;
+}
+
+// Filtro u opción seleccionada
+.activo {
+  // Fondo ámbar
+  background: var(--or-ambar);
+  // Texto negro
+  color: #000000;
+}
